@@ -1,8 +1,9 @@
 import React, { MouseEventHandler } from 'react'
-import { useSlate } from 'slate-react'
+import { useSlate, useSlateStatic } from 'slate-react'
 import { toggleBlock, toggleMark, isBlockActive, isMarkActive } from './helpers'
 import { CustomElementType } from './CustomElement'
 import { CustomText } from './CustomLeaf'
+import { insertLink } from './insert-link'
 
 interface ButtonProps {
   active: boolean
@@ -58,6 +59,24 @@ const MarkButton: React.FC<MarkButtonProps> = ({ format, icon }) => {
   )
 }
 
+const LinkButton: React.FC<BlockButtonProps> = ({ format, icon }) => {
+  const editor = useSlateStatic()
+
+  const handleInsertLink = () => {
+    const url = prompt("Enter a URL"); // For simplicity
+    insertLink(editor, url);
+  };
+
+  return (
+    <Button
+      active={false}
+      onMouseDown={handleInsertLink}
+    >
+      <Icon>{icon}</Icon>
+    </Button>
+  )
+}
+
 export const EditorToolbar: React.FC = () => {
   return (
     <div>
@@ -70,6 +89,7 @@ export const EditorToolbar: React.FC = () => {
       <BlockButton format={CustomElementType.blockQuote} icon="quote" />
       <BlockButton format={CustomElementType.numberedList} icon="list_numbered" />
       <BlockButton format={CustomElementType.bulletedList} icon="list_bulleted" />
+      <LinkButton format={CustomElementType.link} icon="link"/>
     </div>
   )
 }

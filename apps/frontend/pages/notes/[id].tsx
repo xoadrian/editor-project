@@ -10,7 +10,7 @@ const Home: NextPage = () => {
   const { id } = router.query
   const noteId = String(id)
 
-  return (
+  return id ? (
     <>
       <Head>
         <title>Editor Project</title>
@@ -20,7 +20,7 @@ const Home: NextPage = () => {
         {noteId ? <SingleNote id={noteId} key={noteId} /> : null}
       </Interface>
     </>
-  )
+  ) : null
 }
 
 export default Home

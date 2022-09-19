@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { useEffect } from 'react'
+import { Operation } from 'slate'
 import useSWR from 'swr'
 import { NotesResponse, NoteResponse } from '../../../backend/routes/notes'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
@@ -38,5 +39,16 @@ export const useNote = (id: string) => {
   return {
     note: lastMessage && JSON.parse(lastMessage.data) as NoteResponse,
     readyState,
+    sendMessage
+  }
+}
+
+export const useOperations = (noteId: string, editorId: string) => {
+  const { lastJsonMessage, sendMessage } = useWebSocket(`ws://localhost:3001/api/notes/${noteId}/operations/${editorId}`)
+  console.log('useOperations::: ', lastJsonMessage)
+
+  return {
+    operations: lastJsonMessage as Operation[],
+    sendMessage
   }
 }

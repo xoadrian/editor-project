@@ -23,8 +23,10 @@
     "react-use-websocket": "^2.9.1",
     "slate": "^0.66.5",
     "slate-history": "^0.66.0",
+    "slate-hyperscript": "^0.77.0",
     "slate-react": "^0.66.4",
-    "swr": "^1.0.1"
+    "swr": "^1.0.1",
+    "usehooks-ts": "^2.6.0"
   },
   "devDependencies": {
     "@types/react": "17.0.27",

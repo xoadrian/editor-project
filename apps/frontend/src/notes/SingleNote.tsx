@@ -1,4 +1,5 @@
 import React from 'react'
+import { Descendant } from 'slate'
 import { Editor } from '../editor'
 import { useNote } from './hooks'
 import { ReadyState } from 'react-use-websocket'
@@ -10,7 +11,9 @@ interface SingleNoteProps {
 }
 
 const Home: React.FC<SingleNoteProps> = ({ id }) => {
-  const { note, readyState } = useNote(id)
+  const { note, readyState, sendMessage } = useNote(id)
+
+  console.log('HOME::: ', note)
 
   const connectionStatusColor = {
     [ReadyState.CONNECTING]: 'info',
@@ -19,6 +22,13 @@ const Home: React.FC<SingleNoteProps> = ({ id }) => {
     [ReadyState.CLOSED]: 'error',
     [ReadyState.UNINSTANTIATED]: 'error',
   }[readyState] as BadgeTypeMap['props']['color']
+
+  const updateContent = (value: Descendant[]) => {
+    sendMessage(JSON.stringify({
+      ...note,
+      content: value
+    }))
+  }
 
   return note ? (
     <>
@@ -38,7 +48,12 @@ const Home: React.FC<SingleNoteProps> = ({ id }) => {
           flexDirection: 'column',
         }}
       >
-        <Editor initialValue={note.content} />
+        {console.log('CONTENT::: ', note.content)}
+        <Editor
+          noteId={id}
+          initialValue={note.content}
+          updateContent={updateContent}
+        />
       </Paper>
     </>
   ) : null

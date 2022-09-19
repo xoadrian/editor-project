@@ -4,8 +4,8 @@ import admin from 'firebase-admin'
 import serviceAccount from './serviceAccountKey.json'
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://databaseName.firebaseio.com"
+  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+  databaseURL: "https://notes.firebaseio.com"
 })
 
 export default admin.firestore()
