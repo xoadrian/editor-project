@@ -22,13 +22,15 @@ const NotesList: React.FC<NotesListProps> = ({ activeNoteId }) => {
     if (!message) return
 
     switch (message.type) {
-      case 'fetch-notes':
+      case 'fetch-notes': {
         mutate()
         break
-      case 'note':
+      }
+      case 'note': {
         const newNote = message.message as Note
         router.push(`/notes/${newNote.id}`)
         break
+      }
       default:
         console.log(`Unknown websocket message type: ${message.type}`)
     }

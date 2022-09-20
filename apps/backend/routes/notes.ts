@@ -1,6 +1,6 @@
 import express, { RequestHandler, Response } from 'express'
 import { WebsocketRequestHandler } from 'express-ws'
-import { Descendant, Operation } from 'slate'
+import { Descendant } from 'slate'
 import * as ws from 'ws';
 
 import { getNoteWebSocket } from '../function/get-note-web-socket'
@@ -22,8 +22,6 @@ export interface NotesResponse {
     title: string
   }>
 }
-
-export interface OperationsResponse extends Record<string, Operation[]> {}
 
 const notesService = new NotesService()
 
@@ -101,30 +99,34 @@ const noteWsHandler: WebsocketRequestHandler = (ws, req) => {
       const { type, message }: NoteMessage = JSON.parse(wsMessage)
 
       switch (type) {
-        case 'operations':
+        case 'operations': {
           const operations: NoteMessage = {
             type,
             message
           }
           sendMessageToOtherClients(JSON.stringify(operations))
           break
-        case 'title':
+        }
+        case 'title': {
           const title: NoteMessage = {
             type,
             message
           }
           sendMessageToOtherClients(JSON.stringify(title))
           break
-        case 'update-content':
+        }
+        case 'update-content': {
           await notesService.updateContent(req.params.id, message as Descendant[])
           break
-        case 'update-title':
+        }
+        case 'update-title': {
           const fetchNotes: NoteMessage = {
             type: 'fetch-notes'
           }
           await notesService.updateTitle(req.params.id, message as string)
           sendMessageToAllRootWebSockets(wss, JSON.stringify(fetchNotes))
           break
+        }
         default:
           console.log(`Unknown websocket message type: ${type}`)
       }

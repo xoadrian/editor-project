@@ -59,7 +59,7 @@ const MarkButton: React.FC<MarkButtonProps> = ({ format, icon }) => {
   )
 }
 
-const LinkButton: React.FC<BlockButtonProps> = ({ format, icon }) => {
+const LinkButton: React.FC<BlockButtonProps> = ({ icon }) => {
   const editor = useSlateStatic()
 
   const handleInsertLink = () => {

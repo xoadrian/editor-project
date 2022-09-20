@@ -30,7 +30,7 @@ export const insertLink = (editor: Editor, url?: string | null): void => {
 
   ReactEditor.focus(editor);
 
-  if (!!selection) {
+  if (selection) {
     const [parentNode, parentPath] = Editor.parent(
       editor,
       selection.focus?.path

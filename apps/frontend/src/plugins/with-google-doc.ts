@@ -112,8 +112,8 @@ const deserialize = (el: HTMLElement | ChildNode): Array<Node | string | null> |
 const gDocsIdentifier = 'docs-internal-guid-'
 const detectGDocsRegex = new RegExp(`id=["|']?${gDocsIdentifier}`)
 
-export const withGoogleDoc = (editor: Editor) => {
-  const { insertData, isInline, isVoid } = editor
+export const withGoogleDoc = (editor: Editor): Editor => {
+  const { insertData, isInline } = editor
 
   const canHandle = (html: string): boolean => {
     return detectGDocsRegex.test(html)
