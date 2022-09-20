@@ -5,32 +5,22 @@ import { CustomElement, CustomElementType } from '../editor/CustomElement'
 import { CustomText } from '../editor/CustomLeaf'
 
 const ELEMENT_TAGS: Record<string, (el: HTMLElement) => Pick<CustomElement, 'type' | 'href'>> = {
-  // A: el => ({ type: 'link', url: el.getAttribute('href') }),
   BLOCKQUOTE: () => ({ type: CustomElementType.blockQuote }),
   H1: () => ({ type: CustomElementType.headingOne }),
   H2: () => ({ type: CustomElementType.headingTwo }),
-  // H3: () => ({ type: 'heading-three' }),
-  // H4: () => ({ type: 'heading-four' }),
-  // H5: () => ({ type: 'heading-five' }),
-  // H6: () => ({ type: 'heading-six' }),
-  // IMG: el => ({ type: 'image', url: el.getAttribute('src') }),
   LI: () => ({ type: CustomElementType.listItem }),
   OL: () => ({ type: CustomElementType.numberedList }),
   P: () => ({ type: CustomElementType.paragraph }),
-  // PRE: () => ({ type: 'code' }),
   UL: () => ({ type: CustomElementType.bulletedList }),
   A: (el) => { console.log({typeOfEl: typeof el}); return {
     type: CustomElementType.link, href: (el as HTMLAnchorElement).href
   }}
 }
 
-// COMPAT: `B` is omitted here because Google Docs uses `<b>` in weird ways.
 const TEXT_TAGS: Record<string, (el?: HTMLElement) => Omit<CustomText, 'text'>> = {
   CODE: () => ({ code: true }),
-  // DEL: () => ({ strikethrough: true }),
   EM: () => ({ italic: true }),
   I: () => ({ italic: true }),
-  // S: () => ({ strikethrough: true }),
   STRONG: () => ({ bold: true }),
   U: () => ({ underline: true }),
   SPAN: function (el) {
@@ -102,10 +92,6 @@ const deserialize = (el: HTMLElement | ChildNode): Array<Node | string | null> |
     children = [{ text: '' }]
   }
 
-  // if (nodeName === 'BODY') {
-  //   return jsx('fragment', {}, children)
-  // }
-
   if (nodeName === 'B' && (el as HTMLElement).id.startsWith(gDocsIdentifier)) {
     return jsx('fragment', {}, children)
   }
@@ -137,13 +123,8 @@ export const withGoogleDoc = (editor: Editor) => {
     return element.type === 'link' ? true : isInline(element)
   }
 
-  // editor.isVoid = element => {
-  //   return element.type === 'image' ? true : isVoid(element)
-  // }
-
   editor.insertData = data => {
     const html = data.getData('text/html')
-    console.log('withHtml::: insertData::: ', html)
 
     if (canHandle(html)) {
       const parsed = new DOMParser().parseFromString(html, 'text/html')
@@ -151,7 +132,6 @@ export const withGoogleDoc = (editor: Editor) => {
 
       if (startElement) {
         const fragment = deserialize(startElement)
-        console.log({fragment})
         try {
           Transforms.insertFragment(editor, fragment as Node[])
         } catch (e) {
@@ -161,16 +141,6 @@ export const withGoogleDoc = (editor: Editor) => {
         }
         return
       }
-
-      // const fragment = deserialize(parsed.body)
-      // console.log({fragment})
-      //
-      // try {
-      //   Transforms.insertFragment(editor, fragment as Node[])
-      // } catch (e) {
-      //   console.log('Error inserting data::: ', e)
-      // }
-      // return
     }
 
     insertData(data)

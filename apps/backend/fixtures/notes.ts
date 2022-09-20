@@ -1,7 +1,8 @@
 import { Descendant } from 'slate'
+import { ulid } from 'ulid'
 
 export const NOTE_1 = {
-  id: 'n1',
+  id: ulid(),
   title: 'TODO',
   content: [
     {
@@ -24,7 +25,7 @@ export const NOTE_1 = {
 }
 
 export const NOTE_2 = {
-  id: 'n2',
+  id: ulid(),
   title: 'Test Note',
   content: [
     {

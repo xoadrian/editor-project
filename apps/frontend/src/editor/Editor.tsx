@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createEditor, Descendant, BaseEditor, Operation, Editor as SlateEditor } from 'slate'
 import { withHistory, HistoryEditor } from 'slate-history'
 import { useDebounce } from 'usehooks-ts'
-import { useOperations } from '../notes/hooks'
 import { withGoogleDoc } from '../plugins/with-google-doc'
 import { handleHotkeys } from './helpers'
 
@@ -24,53 +23,43 @@ declare module 'slate' {
 }
 
 interface EditorProps {
-  noteId: string,
   initialValue?: Descendant[]
+  operations: Operation[]
   updateContent: (value: Descendant[]) => void
+  sendOperations: (value: Operation[]) => void
   placeholder?: string
 }
 
 export const Editor: React.FC<EditorProps> = ({
-    noteId,
     initialValue = [],
+    operations,
     updateContent,
+    sendOperations,
     placeholder
   }) => {
   const [value, setValue] = useState<Array<Descendant>>(initialValue)
+  // use this variable to differentiate between all value changes and own value changes
+  const [ownValue, setOwnValue] = useState<Descendant[]>(initialValue)
+  const debouncedOwnValue = useDebounce<Descendant[]>(ownValue, 500)
   const renderElement = useCallback(props => <CustomElement {...props} />, [])
   const renderLeaf = useCallback(props => <CustomLeaf {...props} />, [])
   const editor = useMemo(() => withGoogleDoc(withHistory(withReact(createEditor()))), [])
-  const id = useRef(`${Date.now()}`)
-  const { operations, sendMessage } = useOperations(noteId, id.current)
-  const debouncedValue = useDebounce<Descendant[]>(value, 500)
-  // TODO: uuid would be better
   const remote = useRef(false)
 
   useEffect(() => {
-    console.log('userEffect::: debounce:::', debouncedValue === initialValue)
-    if (debouncedValue === initialValue) {
+    if (debouncedOwnValue === initialValue) {
       return
     }
 
-    // const [operation] = editor.operations
-    // console.log(editor.operations)
-    // if (editor.operations.length === 0 ||
-    //   (editor.operations.length === 1 && operation.type === 'set_selection')
-    // ) {
-    //   // no need to trigger any update if there are no editor operations, on cursor position change or text selection
-    //   return
-    // }
-    console.log('updateContent::: ', debouncedValue)
-    updateContent(debouncedValue)
-  }, [debouncedValue])
-
-  // useEffect(() => {
-  //   console.log('useEffect::: initialValue::: ', initialValue === value)
-  //   setValue(initialValue)
-  // }, [initialValue])
+    // we update the note only if we own the changes
+    updateContent(debouncedOwnValue)
+  }, [debouncedOwnValue])
 
   useEffect(() => {
-    console.log('useEffect::: operations::: ', operations)
+    if (!operations || !operations.length) {
+      return
+    }
+
     // mark changes as remote to stop propagation
     remote.current = true
     applyOperations(operations)
@@ -81,16 +70,7 @@ export const Editor: React.FC<EditorProps> = ({
     })
   }, [operations])
 
-  const sendOperations = (value: Operation[]) => {
-    console.log('sendOperations::: ', value)
-    sendMessage(JSON.stringify(value))
-  }
-
-  const applyOperations = (operations: Operation[] | null) => {
-    if (!operations || !operations.length) {
-      return
-    }
-
+  const applyOperations = (operations: Operation[]) => {
     // prevent Slate to normalize the document in-between the operations
     SlateEditor.withoutNormalizing(editor, () => {
       operations.forEach(operation => editor.apply(operation))
@@ -98,15 +78,14 @@ export const Editor: React.FC<EditorProps> = ({
   }
 
   const onChange = (value: Descendant[]) => {
-    console.log('onChange::: ', editor.operations, remote.current)
     setValue(value)
-    console.log((editor as any).withoutNormalizing)
 
     if (!remote.current) {
       // filter out selection operations
       const operations = editor.operations.filter(operation => operation.type !== 'set_selection')
 
       if (operations.length) {
+        setOwnValue(value)
         sendOperations(operations)
       }
     }

@@ -1,8 +1,7 @@
 import React from 'react'
-import { Toolbar, Typography, Drawer, Divider, Box, Container } from '@mui/material'
-import { NotesList } from '../notes'
+import { Box, Container } from '@mui/material'
 
-const drawerWidth = 240
+import { NotesList } from '../notes'
 
 interface InterfaceProps {
   activeNoteId?: string
@@ -11,29 +10,7 @@ interface InterfaceProps {
 const Interface: React.FC<InterfaceProps> = ({ activeNoteId, children }) => {
   return (
     <Box sx={{ display: 'flex' }}>
-      <Drawer variant="permanent" sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: drawerWidth,
-          boxSizing: 'border-box',
-        },
-      }}>
-        <Toolbar>
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            sx={{ flexGrow: 1 }}
-          >
-            Notes
-          </Typography>
-        </Toolbar>
-        <Divider />
-        <NotesList activeNoteId={activeNoteId} />
-        <Divider />
-      </Drawer>
+      <NotesList activeNoteId={activeNoteId} />
 
       <Box
         component="main"

@@ -26,6 +26,7 @@
     "slate-hyperscript": "^0.77.0",
     "slate-react": "^0.66.4",
     "swr": "^1.0.1",
+    "ulid": "^2.3.0",
     "usehooks-ts": "^2.6.0"
   },
   "devDependencies": {
