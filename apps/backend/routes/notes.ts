@@ -26,10 +26,6 @@ export interface NotesResponse {
 const notesService = new NotesService()
 
 const notesHandler: RequestHandler = async (_req, res: Response<NotesResponse>) => {
-  // // Use to populate DB
-  // await notesService.createNote(NOTE_1)
-  // await notesService.createNote(NOTE_2)
-
   const notes = await notesService.getNotes()
 
   res.json({
@@ -133,47 +129,6 @@ const noteWsHandler: WebsocketRequestHandler = (ws, req) => {
     }
   })
 }
-
-// const operationsHandler: WebsocketRequestHandler = (ws, req) => {
-//   // console.log('operationsHandler::: ', req.params.id, typeof req.params.id)
-//   // if (req.params.id == null || req.params.id === 'undefined') {
-//   //   return
-//   // }
-//
-//   const handlerCreateTime = Date.now()
-//
-//   const firebaseUnsubscribe = operationsService.getRef().doc(req.params.id).onSnapshot(snapshot => {
-//     const snapshotUpdateTime = (snapshot.updateTime?.seconds ?? 0) * 1000
-//
-//     if (snapshotUpdateTime < handlerCreateTime) {
-//       // prevent taking operations prior to handle creation
-//       console.log('FB snapshot::: prevent taking operations prior to handle creation::: ', snapshotUpdateTime, handlerCreateTime, snapshotUpdateTime < handlerCreateTime)
-//       return
-//     }
-//     console.log('FB snapshot::: ', req.params.id, snapshot.data())
-//     const operations = operationsService.getChangesForEditor(snapshot, req.params.editorId)
-//
-//     if (operations.length) {
-//       ws.send(JSON.stringify(operations))
-//     }
-//     // snapshot.docChanges().forEach(change => {
-//     //   const isChangeTypeAllowed = /*change.type === 'added' || */change.type === 'modified'
-//     //   console.log('FB operation change::: ', {isChangeTypeAllowed, id: change.doc.id, noteId})
-//     //   if (isChangeTypeAllowed && change.doc.id === noteId) {
-//     //     const operationsResponse = operationsService.convertDocumentToOperations(change.doc)
-//     //     ws.send(JSON.stringify(operationsResponse))
-//     //   }
-//     // })
-//   })
-//
-//   ws.on('close', () => {
-//     firebaseUnsubscribe()
-//   })
-//
-//   ws.on('message', async (message: string) => {
-//     await operationsService.save(req.params.id, req.params.editorId, JSON.parse(message))
-//   })
-// }
 
 router.get('/', notesHandler)
 router.ws('/', notesWsHandler)

@@ -1,0 +1,33 @@
+.linkEditor {
+  display: none;
+  background-color: #fbfbfb !important;
+  position: absolute;
+  margin-top: 4px;
+  min-width: 300px;
+  z-index: 1;
+}
+
+.linkEditorBtn {
+  margin-top: 16px;
+}
+
+.editForm {
+  justify-content: space-between;
+  display: flex;
+}
+
+.materialIcon {
+  font-size: 17px;
+  cursor: pointer;
+  padding: 2px 5px;
+}
+
+.viewLink {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cardContent {
+  padding-bottom: 16px !important;
+}

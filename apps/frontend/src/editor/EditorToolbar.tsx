@@ -1,10 +1,9 @@
-import React, { CSSProperties, MouseEventHandler } from 'react'
-import { useSlate, useSlateStatic } from 'slate-react'
-import { toggleBlock, toggleMark, isBlockActive, isMarkActive } from './helpers'
+import React, { MouseEventHandler } from 'react'
+import { useSlate } from 'slate-react'
 import { CustomElementType } from './CustomElement'
 import { CustomText } from './CustomLeaf'
-import { insertLink } from './insert-link'
 import styles from './EditorToolbar.module.scss'
+import { isBlockActive, isLinkNodeAtSelection, isMarkActive, toggleBlock, toggleLinkAtSelection, toggleMark } from './helpers'
 
 interface ButtonProps {
   active: boolean
@@ -61,17 +60,15 @@ const MarkButton: React.FC<MarkButtonProps> = ({ format, icon }) => {
 }
 
 const LinkButton: React.FC<BlockButtonProps> = ({ icon }) => {
-  const editor = useSlateStatic()
-
-  const handleInsertLink = () => {
-    const url = prompt("Enter a URL"); // For simplicity
-    insertLink(editor, url);
-  };
+  const editor = useSlate()
 
   return (
     <Button
-      active={false}
-      onMouseDown={handleInsertLink}
+      active={isLinkNodeAtSelection(editor, editor.selection)}
+      onMouseDown={(event ) => {
+        event.preventDefault()
+        toggleLinkAtSelection(editor, editor.selection)
+      }}
     >
       <Icon>{icon}</Icon>
     </Button>
