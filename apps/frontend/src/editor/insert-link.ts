@@ -25,7 +25,6 @@ export const insertLink = (editor: Editor, url?: string | null): void => {
   if (!url) return;
 
   const { selection } = editor;
-  console.log({selection})
   const link = createLinkNode(url, 'New Link');
 
   ReactEditor.focus(editor);
@@ -36,7 +35,6 @@ export const insertLink = (editor: Editor, url?: string | null): void => {
       selection.focus?.path
     );
     const parentNodeElement = parentNode as CustomElement
-    console.log({parentNode})
 
     // Remove the Link node if we're inserting a new link node inside of another link.
     if (parentNodeElement.type === CustomElementType.link) {

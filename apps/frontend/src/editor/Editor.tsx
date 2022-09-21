@@ -72,9 +72,14 @@ export const Editor: React.FC<EditorProps> = ({
 
   const applyOperations = (operations: Operation[]) => {
     // prevent Slate to normalize the document in-between the operations
-    SlateEditor.withoutNormalizing(editor, () => {
-      operations.forEach(operation => editor.apply(operation))
-    })
+    try {
+      SlateEditor.withoutNormalizing(editor, () => {
+        operations.forEach(operation => editor.apply(operation))
+      })
+   } catch (e) {
+      console.log('Error applying remote changes', e)
+    }
+
   }
 
   const onChange = (value: Descendant[]) => {

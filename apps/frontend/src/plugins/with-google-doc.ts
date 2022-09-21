@@ -12,9 +12,9 @@ const ELEMENT_TAGS: Record<string, (el: HTMLElement) => Pick<CustomElement, 'typ
   OL: () => ({ type: CustomElementType.numberedList }),
   P: () => ({ type: CustomElementType.paragraph }),
   UL: () => ({ type: CustomElementType.bulletedList }),
-  A: (el) => { console.log({typeOfEl: typeof el}); return {
+  A: (el) => ({
     type: CustomElementType.link, href: (el as HTMLAnchorElement).href
-  }}
+  })
 }
 
 const TEXT_TAGS: Record<string, (el?: HTMLElement) => Omit<CustomText, 'text'>> = {
@@ -67,12 +67,14 @@ const TEXT_TAGS: Record<string, (el?: HTMLElement) => Omit<CustomText, 'text'>> 
 
 const deserialize = (el: HTMLElement | ChildNode): Array<Node | string | null> | (Node | string | null) => {
   if (el.nodeType === 3) {
+    if (el.textContent === '\n' || el.textContent === '\n\n') return null
     return el.textContent
   } else if (el.nodeType !== 1) {
     return null
-  } else if (el.nodeName === 'BR') {
+  } /*else if (el.nodeName === 'BR') {
+    // '\n' rendering is weird in slate, all of them are added at the end of the entire content instead of in between
     return '\n'
-  }
+  }*/
 
   const { nodeName } = el
   let parent = el

@@ -1,6 +1,6 @@
 import React, { CSSProperties} from 'react'
 import { BaseElement } from 'slate'
-import { RenderElementProps, useSelected, useSlateStatic } from 'slate-react'
+import { RenderElementProps, useFocused, useSelected, useSlateStatic } from 'slate-react'
 
 import { removeLink } from './insert-link'
 
@@ -40,13 +40,14 @@ export interface CustomElement extends BaseElement {
 const Link: React.FC<RenderElementProps> = ({ attributes, children, element }) => {
   const editor = useSlateStatic()
   const selected = useSelected()
+  const focused = useFocused()
 
   return (
     <span className="element-link" style={linkStyle.link}>
       <a {...attributes} href={element.href}>
         {children}
       </a>
-      {selected && (
+      {selected && focused && (
         <span className="popup" style={linkStyle.popup} contentEditable={false}>
           <a href={element.href} rel="noreferrer" target="_blank">
             {/*<FontAwesomeIcon icon={faExternalLinkAlt} />*/}
