@@ -69,7 +69,6 @@ export const LinkEditor: React.FC<LinkEditorProps> = ({ linkNodeAndPath, selecti
         {isEditFormVisible ? <div className={styles.editForm}>
           <Input type='text' value={linkURL} onChange={(event) => onLinkURLChange(event.target.value)}/>
           <Button
-            className={styles.linkEditorBtn}
             size='small'
             disabled={!isUrl(linkURL)}
             onClick={onApply}

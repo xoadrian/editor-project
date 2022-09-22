@@ -25,7 +25,7 @@ export interface NotesResponse {
 
 const notesService = new NotesService()
 
-const notesHandler: RequestHandler = async (_req, res: Response<NotesResponse>) => {
+export const notesHandler: RequestHandler = async (_req, res: Response<NotesResponse>) => {
   const notes = await notesService.getNotes()
 
   res.json({
@@ -47,7 +47,7 @@ const sendMessageToAllRootWebSockets = (wss: ws.Server, message: string) => {
   })
 }
 
-const notesWsHandler: WebsocketRequestHandler = (ws, req) => {
+export const notesWsHandler: WebsocketRequestHandler = (ws, req) => {
   const wss = req.app.get('wss') as ws.Server
 
   ws.on('message', async (wsMessage: string) => {
@@ -68,14 +68,13 @@ const notesWsHandler: WebsocketRequestHandler = (ws, req) => {
   })
 }
 
-const noteWsHandler: WebsocketRequestHandler = (ws, req) => {
+export const noteWsHandler: WebsocketRequestHandler = (ws, req) => {
   const noteWebSocket = getNoteWebSocket(ws, req.params.id, req.params.editorId)
   const wss = req.app.get('wss') as ws.Server
 
   const sendMessageToOtherClients = (message: string) => {
     wss.clients.forEach(client => {
       const { noteId, editorId } = client as NoteWebSocket
-
       if (noteId == req.params.id && editorId !== req.params.editorId) {
         // send message to all clients except owner
         client.send(message)

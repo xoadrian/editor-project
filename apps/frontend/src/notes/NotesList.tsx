@@ -1,3 +1,4 @@
+import { margin } from '@mui/system'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import Link from 'next/link'
@@ -64,7 +65,7 @@ const NotesList: React.FC<NotesListProps> = ({ activeNoteId }) => {
         >
           Notes
         </Typography>
-        <Button onClick={addNote}>Add</Button>
+        <Button onClick={addNote} style={{marginTop: '6px'}}>Add</Button>
       </Toolbar>
       <Divider />
       <List>
